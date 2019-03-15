@@ -124,9 +124,13 @@ while 1==1:
     print('Sensor 22')
     print('{0:0.1f},{0:0.1f}'.format(temperature,humidity))    
     if connflag == True:
-        """tempreading = uniform(20.0,25.0)   """                    # Generating Temperature Readings 
+        """tempreading = uniform(20.0,25.0)   """  
+        mqttc.publish("pin", pin, qos=1)        # topic: temperature # Publishing Temperature values
+        print("msg sent: pin " + "%.2f" % pin)                  # Generating Temperature Readings 
         mqttc.publish("temperature", temperature, qos=1)        # topic: temperature # Publishing Temperature values
         print("msg sent: temperature " + "%.2f" % temperature) # Print sent temperature msg on console
+        mqttc.publish("humidity", humidity, qos=1)        # topic: temperature # Publishing Temperature values
+        print("msg sent: humidity " + "%.2f" % humidity)
     else:
         print("waiting for connection...")    
 
