@@ -1,10 +1,9 @@
 
-
 ############################################ 
 # PROBLEM STATEMENT:
-# This program will publish test mqtt messages using the AWS IOT hub
+# This program publish test mqtt messages using the AWS IOT hub
 # 
-# To test this program you have to run first its companinon aws_iot_sub.py
+# To test this program you have to run first its companinon piTemperature_sub.py
 # that will subscribe and show all the messages sent by this program
 #
 ############################################
@@ -35,8 +34,9 @@ import paho.mqtt.client as paho
 import os
 import socket
 import ssl
-from time import sleep
-from random import uniform
+from time 
+import sys
+import Adafruit_DHT
  
 connflag = False
  
@@ -72,11 +72,63 @@ mqttc.connect(awshost, awsport, keepalive=60)               # connect to aws ser
  
 mqttc.loop_start()                                          # Start the loop
  
+
+# Abrir archivos--------------------------------------------------------------
+fo = open ("losdatos", "a",1)
+fo1 = open ("/media/pendrive/losdatos", "a",1)
+archivo1 = open ("lapso_seg.txt", "r",1)
+
+# Definir lapso entre lecturas------------------------------------------------
+delay = int(archivo1.read())
 while 1==1:
-    sleep(5)
+    print "fecha:", time.strftime("%d.%m.%y")
+    print "hora:", time.strftime("%H.%M.%S")
+    fo.write(time.strftime("%d.%m.%y"))
+    fo.write(",")
+    fo.write(time.strftime("%H.%M.%S"))
+    fo.write(",")  
+
+    fo1.write(time.strftime("%d.%m.%y"))
+    fo1.write(",")
+    fo1.write(time.strftime("%H.%M.%S"))
+    fo1.write(",")
+
+    sensor = Adafruit_DHT.DHT22
+    pin = 17
+    humidity, temperature = Adafruit_DHT.read_retry(sensor, pin)
+    fo.write('{0:0.1f},{1:0.1f}'.format(temperature, humidity))
+    fo1.write('{0:0.1f},{1:0.1f}'.format(temperature, humidity))
+    
+
+    print('Sensor 17:')
+    print('{0:0.1f},{1:0.1f}'.format(temperature, humidity))
+    fo.write(",")
+   
+    fo1.write(",")
+
+    sensor = Adafruit_DHT.DHT22
+    pin = 27
+    humidity, temperature = Adafruit_DHT.read_retry(sensor, pin)
+    fo.write('{0:0.1f},{1:0.1f}'.format(temperature, humidity))
+    fo1.write('{0:0.1f},{1:0.1f}'.format(temperature, humidity))    
+
+    fo.write('\n')
+    print('Sensor 27:')
+    print('{0:0.1f},{1:0.1f}'.format(temperature, humidity))
+    fo.write('\n')
+    fo1.write('\n')
+       
+    sensor = Adafruit_DHT.DHT22
+    pin = 22
+    humidity, temperature = Adafruit_DHT.read_retry(sensor,pin)
+    print('Sensor 22')
+    print('{0:0.1f},{0:0.1f}'.format(temperature,humidity))    
     if connflag == True:
-        tempreading = uniform(20.0,25.0)                        # Generating Temperature Readings 
-        mqttc.publish("temperature", tempreading, qos=1)        # topic: temperature # Publishing Temperature values
-        print("msg sent: temperature " + "%.2f" % tempreading ) # Print sent temperature msg on console
+        """tempreading = uniform(20.0,25.0)   """                    # Generating Temperature Readings 
+        mqttc.publish("temperature", temperature, qos=1)        # topic: temperature # Publishing Temperature values
+        print("msg sent: temperature " + "%.2f" % temperature) # Print sent temperature msg on console
     else:
         print("waiting for connection...")    
+
+    time.sleep(delay)
+ 
