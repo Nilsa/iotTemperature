@@ -34,7 +34,7 @@ import paho.mqtt.client as paho
 import os
 import socket
 import ssl
-from time 
+import time 
 import sys
 import Adafruit_DHT
  
